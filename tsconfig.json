@@ -20,9 +20,9 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",  // This tells the compiler where to start looking for modules
     "paths": {
-      "baseUrl": ["."],  // This tells the compiler where to start looking for modules
-      "@/*": ["./app/*"]
+      "@/*": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
