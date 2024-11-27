@@ -52,13 +52,13 @@ export default function Creator() {
     const [isPlaying, setIsPlaying] = useState(false);
     
     async function getStreams(){
-      //@ts-ignore
+        //@ts-expect-error
         if(!data?.user?.id){
             return;
         }
         try {
             setStreamLoading(true);
-            //@ts-ignore
+
             const res = await axios.get(`/api/streams?creatorId=${params.creatorId}`);        
             if(res.data.error){
                 throw new Error(res.data.error)
@@ -67,9 +67,8 @@ export default function Creator() {
             setStreams(res.data.allStreams.sort((a: Stream, b: Stream) => b.upvoteCount - a.upvoteCount));
             setCurrentStream(res.data.currentStream.stream);
             setYtPreview(true);
-        } catch (error: any) {
-            console.log(error);
-
+        } catch (error) {
+            // eslint-disable-line @typescript-eslint/no-unused-vars
             toast.error(`Error while loading streams`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -91,7 +90,6 @@ export default function Creator() {
             setNewStreamLoading(true);
             
             const res = await axios.post('/api/streams', {
-                //@ts-ignore
                 creatorId: params.creatorId,
                 url: newStreamUrl
             });
@@ -113,7 +111,8 @@ export default function Creator() {
 
             setNewStreamUrl('');
             getStreams();
-        } catch (error: any) {
+        } catch (error) {
+            //@ts-expect-error
             toast.error(`${error.message ?? "Error while creating a new stream"}`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -131,7 +130,7 @@ export default function Creator() {
     }
 
     useEffect(() => {
-      //@ts-ignore
+        //@ts-expect-error
         if(data?.user?.id == params.creatorId){
             router.push('/dashboard');
         }
@@ -140,7 +139,7 @@ export default function Creator() {
         const interval = setInterval( () => { 
         
         }, REFRESH_INTERVAL )
-      //@ts-ignore
+        // @ts-expect-error
     }, [data?.user?.id])
 
     useEffect(() => {
@@ -191,8 +190,9 @@ export default function Creator() {
             }
             
             getStreams();
-        } catch (error: any) {
+        } catch (error) {
             const message = vote == "upvote" ? "Upvoting" : "Downvoting";
+            //@ts-expect-error
             toast.error(`${error.message ?? `Error while ${message}`}`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -207,7 +207,6 @@ export default function Creator() {
     }
 
     async function handleShare(){
-      //@ts-ignore
         const shareAbleLink = window.location.href;
 
         await navigator.clipboard.writeText(shareAbleLink);
@@ -229,6 +228,7 @@ export default function Creator() {
             getStreams();
 
         } catch (error) {
+            // eslint-disable-line @typescript-eslint/no-unused-vars
             toast.error(`Error while changing stream`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -248,10 +248,6 @@ export default function Creator() {
 
         <div>
             <AppBar page='creator'/>   
-        </div>
-
-        <div className='text-white' onClick={autoNextStream}>
-            {JSON.stringify(session)}
         </div>
 
         <main className="md:flex-grow md:flex md:justify-center md:gap-10 overflow-auto p-4">
@@ -297,7 +293,6 @@ export default function Creator() {
                     {/* <LiteYouTubeEmbed id={currentStream?.extractedID || ""} title='test'/> */}
                     <h2 className="text-xl font-semibold mb-4 text-white">Now Playing</h2>
                     <div className={`flex flex-col items-center gap-3 ${isPlaying ? 'pointer-events-none cursor-not-allowed' : ''}`}>
-                        {/* @ts-ignore */}
                         <div ref={streamRef} className="w-full"/>
                         {/* <a href={currentStream?.url} className='w-full hover:scale-95 transition-all'>
                             <img src={currentStream?.smallThumbnail} alt="thumbnail" className='w-full rounded-xl'/>

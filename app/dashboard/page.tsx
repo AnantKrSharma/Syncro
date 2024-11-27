@@ -48,13 +48,13 @@ export default function Dashboard() {
     const videoPlayerRef = useRef();
     
     async function getStreams(){
-        //@ts-ignore
+        //@ts-expect-error
         if(!data?.user?.id){
             return;
         }
         try {
             setStreamLoading(true);
-            //@ts-ignore
+            //@ts-expect-error
             const res = await axios.get(`/api/streams?creatorId=${data?.user?.id}`);        
             if(res.data.error){
                 throw new Error(res.data.error);
@@ -63,7 +63,8 @@ export default function Dashboard() {
             setStreams(res.data.allStreams.sort((a: Stream, b: Stream) => b.upvoteCount - a.upvoteCount));
             setCurrentStream(res.data.currentStream.stream);
             setYtPreview(true);
-        } catch (error: any) {
+        } catch (error) {
+            // eslint-disable-line @typescript-eslint/no-unused-vars
             toast.error(`Error while loading streams`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -85,7 +86,7 @@ export default function Dashboard() {
             setNewStreamLoading(true);
             
             const res = await axios.post('/api/streams', {
-                //@ts-ignore
+                //@ts-expect-error
                 creatorId: data?.user?.id,
                 url: newStreamUrl
             });
@@ -107,7 +108,8 @@ export default function Dashboard() {
 
             setNewStreamUrl('');
             getStreams();
-        } catch (error: any) {
+        } catch (error) {
+            //@ts-expect-error
             toast.error(`${error.message ?? "Error while creating a new stream"}`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -130,7 +132,7 @@ export default function Dashboard() {
         const interval = setInterval( () => { 
 
         }, REFRESH_INTERVAL )
-        //@ts-ignore
+        //@ts-expect-error
     }, [data?.user?.id])
 
     useEffect(() => {
@@ -179,8 +181,9 @@ export default function Dashboard() {
             }
             
             getStreams();
-        } catch (error: any) {
+        } catch (error) {
             const message = vote == "upvote" ? "Upvoting" : "Downvoting";
+            //@ts-expect-error
             toast.error(`${error.message ?? `Error while ${message}`}`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -195,7 +198,7 @@ export default function Dashboard() {
     }
 
     async function handleShare(){
-        //@ts-ignore
+        //@ts-expect-error
         const shareAbleLink = `${window.location.href.split("/dashboard")[0]}/creator/${data?.user?.id}`;
 
         await navigator.clipboard.writeText(shareAbleLink);
@@ -219,7 +222,8 @@ export default function Dashboard() {
 
             setCurrentStream(res.data.current.stream);
             getStreams();
-        } catch (error: any) {
+        } catch (error) {
+            // eslint-disable-line @typescript-eslint/no-unused-vars
             toast.error(`Error while changing stream`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -242,10 +246,6 @@ export default function Dashboard() {
 
         <div>
             <AppBar page='dashboard'/>   
-        </div>
-
-        <div className='text-white'>
-            {JSON.stringify(data)}
         </div>
 
         <main className="md:flex-grow md:flex md:justify-center md:gap-10 overflow-auto p-4">
@@ -290,7 +290,6 @@ export default function Dashboard() {
                 <div className='flex flex-col justify-center bg-zinc-700 bg-opacity-25 backdrop-blur-3xl p-6 rounded-2xl w-2/3'>
                     <h2 className="text-xl font-semibold mb-4 text-white">Now Playing</h2>
                     <div className='w-full'>
-                        {/* @ts-ignore */}
                         <div ref={videoPlayerRef} className='w-full'/>
                         {/* <iframe src={`https://www.youtube.com/embed/${currentStream?.extractedID}?autoplay=1`} 
                                 title="YouTube video player" 

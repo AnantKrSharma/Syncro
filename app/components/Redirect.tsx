@@ -12,7 +12,7 @@ function Redirect(){
         if(status == "unauthenticated"){
             router.push('/')
         }
-    }, [status])
+    }, [status, router])
 
     return null;
 }

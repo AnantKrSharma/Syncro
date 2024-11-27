@@ -61,6 +61,7 @@ export async function GET(req: NextRequest){
             current
         })
     }catch(error){
+        // eslint-disable-line @typescript-eslint/no-unused-vars
         return NextResponse.json({
             error: "Error while updating current stream"
         });

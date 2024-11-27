@@ -12,7 +12,7 @@ export const NEXT_AUTH = {
     secret: process.env.NEXTAUTH_SECRET,
 
     callbacks: {
-        async signIn({ user, account }: any){
+        async signIn({ user, account }){
             if(!user?.email){
                 return false;
             }
@@ -39,17 +39,18 @@ export const NEXT_AUTH = {
                 user.id = newUser.id;
                 
             } catch (error) {
+                // eslint-disable-line @typescript-eslint/no-unused-vars
                 // return false;
             }
             return true;
         },
-        async jwt({ token, user }: any){
+        async jwt({ token, user }){
             if(user){
                 token.id = user.id
             }
             return token;
         },
-        async session({ session, token }: any){
+        async session({ session, token }){
             if(token?.id){
                 session.user.id = token.id;
             }

@@ -49,18 +49,12 @@ export async function POST(req: NextRequest){
             }
         }
 
-        const isYoutubeUrl = body.url.includes("youtube") ? true : false;  //check whether the url is of YouTube or not
-        const extractedId = isYoutubeUrl ? body.url.split("?v=")[1] : body.url.split("?si=")[1];
+        const extractedId = body.url.split("?v=")[1];
 
-        if(isYoutubeUrl){
-            var video = await youtubesearchapi.GetVideoDetails(extractedId);  //fetch the details of the YouTube video - title, thumbnail, etc
+        let video = await youtubesearchapi.GetVideoDetails(extractedId);  //fetch the details of the YouTube video - title, thumbnail, etc
 
-            var thumbnails = video.thumbnail.thumbnails;
-            thumbnails.sort( (a: { width: number }, b: { width: number }) => a.width < b.width ? -1 : 1 );  //arrange in ascending order
-        }
-        else{
-            console.log(extractedId);
-        }
+        let thumbnails = video.thumbnail.thumbnails;
+        thumbnails.sort( (a: { width: number }, b: { width: number }) => a.width < b.width ? -1 : 1 );  //arrange in ascending order
 
         const newStream = await prismaClient.stream.create({  //create new stream
             data: {
@@ -68,7 +62,7 @@ export async function POST(req: NextRequest){
                 addedById: session?.user?.id,
                 url: body.url,
                 extractedID: extractedId,
-                type: isYoutubeUrl ? "YouTube" : "Spotify",
+                type: "YouTube",
                 title: video.title ?? "Stream not found",
                 largeThumbnail: thumbnails[thumbnails.length - 1].url ?? "https://e7.pngegg.com/pngimages/829/733/png-clipart-logo-brand-product-trademark-font-not-found-logo-brand.png",
                 smallThumbnail: (thumbnails.length > 1 ? thumbnails[thumbnails.length - 2].url : thumbnails[thumbnails.length - 1].url) ?? "https://e7.pngegg.com/pngimages/829/733/png-clipart-logo-brand-product-trademark-font-not-found-logo-brand.png"
@@ -81,6 +75,7 @@ export async function POST(req: NextRequest){
         })
     }
     catch(err){
+        // eslint-disable-line @typescript-eslint/no-unused-vars
         return NextResponse.json({
             error: "Error while creating a new stream."
         });
@@ -150,6 +145,7 @@ export async function GET(req: NextRequest){
         })
 
     } catch (error) {
+        // eslint-disable-line @typescript-eslint/no-unused-vars
         return NextResponse.json({
             error: "Error while fetching streams"
         })

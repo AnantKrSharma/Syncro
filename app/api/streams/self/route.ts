@@ -1,9 +1,9 @@
 import { NEXT_AUTH } from "@/app/lib/auth";
 import { prismaClient } from "@/app/lib/db";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest){
+export async function GET(){
     try {
         const session = await getServerSession(NEXT_AUTH);  //get the logged-in user details
         if(!session?.user?.email){
@@ -43,6 +43,7 @@ export async function GET(req: NextRequest){
                 }) )
         });
     } catch (error) {
+        // eslint-disable-line @typescript-eslint/no-unused-vars
         return NextResponse.json({
             error: "Error while fetching streams"
         })
