@@ -2,7 +2,6 @@ import { prismaClient } from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from 'zod';
 import { spotifyRegex, youtubeRegex } from "@/app/lib/regex";
-// @ts-ignore
 import youtubesearchapi from 'youtube-search-api';
 import { getServerSession } from "next-auth";
 import { NEXT_AUTH } from "@/app/lib/auth";
@@ -51,9 +50,9 @@ export async function POST(req: NextRequest){
 
         const extractedId = body.url.split("?v=")[1];
 
-        let video = await youtubesearchapi.GetVideoDetails(extractedId);  //fetch the details of the YouTube video - title, thumbnail, etc
+        const video = await youtubesearchapi.GetVideoDetails(extractedId);  //fetch the details of the YouTube video - title, thumbnail, etc
 
-        let thumbnails = video.thumbnail.thumbnails;
+        const thumbnails = video.thumbnail.thumbnails;
         thumbnails.sort( (a: { width: number }, b: { width: number }) => a.width < b.width ? -1 : 1 );  //arrange in ascending order
 
         const newStream = await prismaClient.stream.create({  //create new stream

@@ -48,13 +48,13 @@ export default function Dashboard() {
     const videoPlayerRef = useRef();
     
     async function getStreams(){
-        //@ts-expect-error
+        //@ts-expect-error: Id field is added
         if(!data?.user?.id){
             return;
         }
         try {
             setStreamLoading(true);
-            //@ts-expect-error
+            //@ts-expect-error: Id field is added
             const res = await axios.get(`/api/streams?creatorId=${data?.user?.id}`);        
             if(res.data.error){
                 throw new Error(res.data.error);
@@ -86,7 +86,7 @@ export default function Dashboard() {
             setNewStreamLoading(true);
             
             const res = await axios.post('/api/streams', {
-                //@ts-expect-error
+                //@ts-expect-error: Id field is added
                 creatorId: data?.user?.id,
                 url: newStreamUrl
             });
@@ -109,7 +109,7 @@ export default function Dashboard() {
             setNewStreamUrl('');
             getStreams();
         } catch (error) {
-            //@ts-expect-error
+            //@ts-expect-error: error.message is used
             toast.error(`${error.message ?? "Error while creating a new stream"}`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -139,7 +139,7 @@ export default function Dashboard() {
         if(!videoPlayerRef.current){
             return;
         }
-        let player = YouTubePlayer(videoPlayerRef.current);
+        const player = YouTubePlayer(videoPlayerRef.current);
 
         // 'loadVideoById' is queued until the player is ready to receive API calls.
         player.loadVideoById(currentStream?.extractedID || '');
@@ -183,7 +183,7 @@ export default function Dashboard() {
             getStreams();
         } catch (error) {
             const message = vote == "upvote" ? "Upvoting" : "Downvoting";
-            //@ts-expect-error
+            //@ts-expect-error: error.message is used
             toast.error(`${error.message ?? `Error while ${message}`}`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -198,7 +198,7 @@ export default function Dashboard() {
     }
 
     async function handleShare(){
-        //@ts-expect-error
+        //@ts-expect-error: Id field is added
         const shareAbleLink = `${window.location.href.split("/dashboard")[0]}/creator/${data?.user?.id}`;
 
         await navigator.clipboard.writeText(shareAbleLink);

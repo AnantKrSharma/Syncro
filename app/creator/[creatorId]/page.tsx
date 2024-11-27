@@ -52,7 +52,7 @@ export default function Creator() {
     const [isPlaying, setIsPlaying] = useState(false);
     
     async function getStreams(){
-        //@ts-expect-error
+        //@ts-expect-error: Id field is added
         if(!data?.user?.id){
             return;
         }
@@ -112,7 +112,7 @@ export default function Creator() {
             setNewStreamUrl('');
             getStreams();
         } catch (error) {
-            //@ts-expect-error
+            //@ts-expect-error: error.message is used
             toast.error(`${error.message ?? "Error while creating a new stream"}`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -130,7 +130,7 @@ export default function Creator() {
     }
 
     useEffect(() => {
-        //@ts-expect-error
+        //@ts-expect-error: Id field is added
         if(data?.user?.id == params.creatorId){
             router.push('/dashboard');
         }
@@ -139,14 +139,14 @@ export default function Creator() {
         const interval = setInterval( () => { 
         
         }, REFRESH_INTERVAL )
-        // @ts-expect-error
+        //@ts-expect-error: Id field is added
     }, [data?.user?.id])
 
     useEffect(() => {
         if(!streamRef.current){
             return;
         }
-        let player = YouTubePlayer(streamRef.current);
+        const player = YouTubePlayer(streamRef.current);
 
         player.loadVideoById(currentStream?.extractedID || '');
 
@@ -192,7 +192,7 @@ export default function Creator() {
             getStreams();
         } catch (error) {
             const message = vote == "upvote" ? "Upvoting" : "Downvoting";
-            //@ts-expect-error
+            //@ts-expect-error: error.message is used
             toast.error(`${error.message ?? `Error while ${message}`}`, {
                 position: "bottom-right",
                 autoClose: 2100,
