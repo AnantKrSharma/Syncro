@@ -112,7 +112,6 @@ export default function Creator() {
             setNewStreamUrl('');
             getStreams();
         } catch (error) {
-            //@ts-expect-error: error.message is used
             toast.error(`${error.message ?? "Error while creating a new stream"}`, {
                 position: "bottom-right",
                 autoClose: 2100,
@@ -192,7 +191,7 @@ export default function Creator() {
             getStreams();
         } catch (error) {
             const message = vote == "upvote" ? "Upvoting" : "Downvoting";
-            //@ts-expect-error: error.message is used
+            
             toast.error(`${error.message ?? `Error while ${message}`}`, {
                 position: "bottom-right",
                 autoClose: 2100,
