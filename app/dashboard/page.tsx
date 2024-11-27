@@ -132,7 +132,7 @@ export default function Dashboard() {
         const interval = setInterval( () => { 
 
         }, REFRESH_INTERVAL )
-        //@ts-expect-error
+        //@ts-expect-error: Id field is added
     }, [data?.user?.id])
 
     useEffect(() => {
