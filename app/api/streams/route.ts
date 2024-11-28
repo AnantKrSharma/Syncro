@@ -76,7 +76,8 @@ export async function POST(req: NextRequest){
     catch(err){
         // eslint-disable-line @typescript-eslint/no-unused-vars
         return NextResponse.json({
-            error: "Error while creating a new stream."
+            error: "Error while creating a new stream.",
+            err
         });
     }
 }
