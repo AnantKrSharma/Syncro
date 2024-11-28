@@ -5,6 +5,7 @@ import { spotifyRegex, youtubeRegex } from "@/app/lib/regex";
 import youtubesearchapi from 'youtube-search-api';
 import { getServerSession } from "next-auth";
 import { NEXT_AUTH } from "@/app/lib/auth";
+import fetchVideoInfo from 'updated-youtube-info';
 
 const CreateStreamSchema = z.object({
     creatorId: z.string(),
@@ -57,10 +58,13 @@ export async function POST(req: NextRequest){
         }
 
         //fetch the details of the YouTube video - title, thumbnail, etc
-        const video = await youtubesearchapi.GetVideoDetails(extractedId).catch(err => {
-            console.error("YouTube API Error in Production:", err.message);
-            return null;
-        });
+        // const video = await youtubesearchapi.GetVideoDetails(extractedId).catch(err => {
+        //     console.error("YouTube API Error in Production:", err.message);
+        //     return null;
+        // });
+        // let thumbnails = video.thumbnail.thumbnails;
+        // thumbnails.sort( (a: { width: number }, b: { width: number }) => a.width < b.width ? -1 : 1 );  //arrange in ascending order
+        const video = await fetchVideoInfo(extractedId);
         if (!video) {
             return NextResponse.json({
                 error: "Failed to fetch video details",
@@ -68,9 +72,6 @@ export async function POST(req: NextRequest){
         }
         console.log("Video Details Response in Production:", video);
         
-        let thumbnails = video.thumbnail.thumbnails;
-        thumbnails.sort( (a: { width: number }, b: { width: number }) => a.width < b.width ? -1 : 1 );  //arrange in ascending order
-
         const newStream = await prismaClient.stream.create({  //create new stream
             data: {
                 userId: body.creatorId,
@@ -79,8 +80,10 @@ export async function POST(req: NextRequest){
                 extractedID: extractedId,
                 type: "YouTube",
                 title: video.title ?? "Stream not found",
-                largeThumbnail: thumbnails[thumbnails.length - 1].url ?? "https://e7.pngegg.com/pngimages/829/733/png-clipart-logo-brand-product-trademark-font-not-found-logo-brand.png",
-                smallThumbnail: (thumbnails.length > 1 ? thumbnails[thumbnails.length - 2].url : thumbnails[thumbnails.length - 1].url) ?? "https://e7.pngegg.com/pngimages/829/733/png-clipart-logo-brand-product-trademark-font-not-found-logo-brand.png"
+                // largeThumbnail: thumbnails[thumbnails.length - 1].url ?? "https://e7.pngegg.com/pngimages/829/733/png-clipart-logo-brand-product-trademark-font-not-found-logo-brand.png",
+                // smallThumbnail: (thumbnails.length > 1 ? thumbnails[thumbnails.length - 2].url : thumbnails[thumbnails.length - 1].url) ?? "https://e7.pngegg.com/pngimages/829/733/png-clipart-logo-brand-product-trademark-font-not-found-logo-brand.png"
+                largeThumbnail: video?.thumbnailUrl,
+                smallThumbnail: video?.thumbnailUrl
             }
         })
 
