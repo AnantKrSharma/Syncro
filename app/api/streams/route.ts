@@ -64,7 +64,10 @@ export async function POST(req: NextRequest){
         // });
         // let thumbnails = video.thumbnail.thumbnails;
         // thumbnails.sort( (a: { width: number }, b: { width: number }) => a.width < b.width ? -1 : 1 );  //arrange in ascending order
-        const video = await fetchVideoInfo(extractedId);
+        const video = await fetchVideoInfo(extractedId).catch(err => {
+                                console.error("YouTube API Error in Production:", err.message);
+                                return null;
+                            });
         if (!video) {
             return NextResponse.json({
                 error: "Failed to fetch video details",
