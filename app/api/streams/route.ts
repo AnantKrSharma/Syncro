@@ -52,7 +52,7 @@ export async function POST(req: NextRequest){
 
         const video = await youtubesearchapi.GetVideoDetails(extractedId);  //fetch the details of the YouTube video - title, thumbnail, etc
 
-        const thumbnails = video.thumbnail.thumbnails;
+        let thumbnails = video.thumbnail.thumbnails;
         thumbnails.sort( (a: { width: number }, b: { width: number }) => a.width < b.width ? -1 : 1 );  //arrange in ascending order
 
         const newStream = await prismaClient.stream.create({  //create new stream
