@@ -74,6 +74,8 @@ export async function POST(req: NextRequest){
         })
     }
     catch(err){
+        console.log(err.message);
+        
         return NextResponse.json({
             error: "Error while creating a new stream.",
             err: err.message
